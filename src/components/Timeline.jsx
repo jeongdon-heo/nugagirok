@@ -1,11 +1,29 @@
 import { useState } from "react";
+import { CATEGORIES } from "../constants";
 import { sectionTitle } from "../styles";
 import { ObsCard, EmptyState } from "./shared";
 
 export default function Timeline({ students, observations, role, deleteObservation, updateObservation }) {
   const [openId, setOpenId] = useState(null);
+  const [copied, setCopied] = useState(false);
 
-  const toggle = (id) => setOpenId(openId === id ? null : id);
+  const toggle = (id) => { setOpenId(openId === id ? null : id); setCopied(false); };
+
+  const copyRecords = (student, obs) => {
+    const lines = obs
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .map((o) => {
+        const cat = CATEGORIES.find((c) => c.id === o.category);
+        const catLabel = cat ? `[${cat.label}]` : "";
+        const author = o.authorType === "student" ? `(또래:${o.authorName})` : "";
+        return `${o.date} ${catLabel}${author} ${o.content}`;
+      });
+    const text = `[${student.num}번 ${student.name}] 누가기록 (${obs.length}건)\n${lines.join("\n")}`;
+    navigator.clipboard?.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   return (
     <div style={{ paddingTop: 24 }}>
@@ -45,6 +63,12 @@ export default function Timeline({ students, observations, role, deleteObservati
                 {student?.num}번 {student?.name}
                 <span style={{ fontWeight: 400, fontSize: 13, color: "#888", marginLeft: 8 }}>{sObs.length}건</span>
               </h3>
+              {sObs.length > 0 && (
+                <button onClick={() => copyRecords(student, sObs)}
+                  style={{ background: "none", border: "1px solid #ddd", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", color: copied ? "#10B981" : "#666" }}>
+                  {copied ? "✅ 복사됨" : "📋 누가기록 복사"}
+                </button>
+              )}
             </div>
             {sObs.length === 0 && <EmptyState text="아직 기록이 없습니다." />}
             {sObs.map((o) => (
