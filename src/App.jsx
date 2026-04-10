@@ -341,7 +341,7 @@ export default function App() {
           <StudentWrite students={students} currentStudent={currentStudent} addObservation={addObservation} missions={missions} />
         )}
         {role === "student" && page === "myrecords" && (
-          <MyRecords currentStudent={currentStudent} observations={observations} />
+          <MyRecords currentStudent={currentStudent} observations={observations} deleteObservation={deleteObservation} />
         )}
       </main>
       <BottomNav role={role} page={page} setPage={setPage} />
