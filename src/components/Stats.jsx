@@ -10,9 +10,10 @@ export default function Stats({ students, observations }) {
   const sortedMonths = Object.entries(months).sort((a, b) => a[0].localeCompare(b[0]));
   const maxCount = Math.max(...Object.values(months), 1);
 
-  const catCounts = CATEGORIES.map((c) => ({
+  const allCats = [...CATEGORIES, { id: "general", label: "미분류", icon: "📝", color: "#9CA3AF" }];
+  const catCounts = allCats.map((c) => ({
     ...c, count: observations.filter((o) => o.category === c.id).length,
-  }));
+  })).filter((c) => c.id !== "general" || c.count > 0);
   const totalObs = observations.length || 1;
 
   const studentCounts = students

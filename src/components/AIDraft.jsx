@@ -164,8 +164,9 @@ ${obsText}
           {!draft && !loading && (
             <div style={{ background: "#fff", borderRadius: 14, padding: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
               <h3 style={{ fontSize: 14, fontWeight: 700, margin: "0 0 12px" }}>📊 {selectedStudent.name} 기록 현황</h3>
-              {CATEGORIES.map((c) => {
+              {[...CATEGORIES, { id: "general", label: "미분류", icon: "📝", color: "#9CA3AF" }].map((c) => {
                 const count = observations.filter((o) => o.targetId === selectedStudent.id && o.category === c.id).length;
+                if (c.id === "general" && count === 0) return null;
                 return (
                   <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
                     <span style={{ fontSize: 12, width: 90 }}>{c.icon} {c.label}</span>
