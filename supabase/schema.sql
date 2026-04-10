@@ -31,7 +31,7 @@ CREATE TABLE observations (
   class_id UUID NOT NULL REFERENCES classes(id) ON DELETE CASCADE,
   target_id UUID NOT NULL REFERENCES students(id) ON DELETE CASCADE,
   target_name TEXT NOT NULL,
-  category TEXT NOT NULL,
+  category TEXT,
   content TEXT NOT NULL,
   date DATE NOT NULL DEFAULT CURRENT_DATE,
   author_type TEXT NOT NULL CHECK (author_type IN ('teacher', 'student')),

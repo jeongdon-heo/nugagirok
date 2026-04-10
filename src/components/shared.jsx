@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CATEGORIES } from "../constants";
 
 export function ObsCard({ obs, showAuthor, canDelete, onDelete, canEdit, onSave }) {
-  const cat = CATEGORIES.find((c) => c.id === obs.category);
+  const cat = CATEGORIES.find((c) => c.id === obs.category) || { icon: "📝", label: "미분류", color: "#9CA3AF" };
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(obs.content);
   const [saving, setSaving] = useState(false);

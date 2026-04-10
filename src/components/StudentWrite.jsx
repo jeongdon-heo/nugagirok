@@ -21,14 +21,14 @@ export default function StudentWrite({ students, currentStudent, addObservation,
   };
 
   const save = async () => {
-    if (!target || !cat || !content.trim() || saving) return;
+    if (!target || !content.trim() || saving) return;
     setSaving(true);
     const s = students.find((x) => x.id === target);
     const isSelf = target === currentStudent.id;
     const { error } = await addObservation({
       targetId: target,
       targetName: s?.name,
-      category: cat,
+      category: cat || null,
       content: content.trim(),
       date,
       authorType: "student",
@@ -122,8 +122,8 @@ export default function StudentWrite({ students, currentStudent, addObservation,
         <span style={{ fontSize: 11, color: "#999" }}>{content.length}/500</span>
       </div>
 
-      <button onClick={save} disabled={!target || !cat || !content.trim() || saving}
-        style={{ width: "100%", padding: 16, borderRadius: 14, border: "none", background: (!target || !cat || !content.trim() || saving) ? "#ccc" : "#1a1a2e", color: "#E8D5B7", fontSize: 16, fontWeight: 700, cursor: "pointer", marginTop: 8, fontFamily: "inherit" }}>
+      <button onClick={save} disabled={!target || !content.trim() || saving}
+        style={{ width: "100%", padding: 16, borderRadius: 14, border: "none", background: (!target || !content.trim() || saving) ? "#ccc" : "#1a1a2e", color: "#E8D5B7", fontSize: 16, fontWeight: 700, cursor: "pointer", marginTop: 8, fontFamily: "inherit" }}>
         {saved ? "✅ 저장 완료!" : saving ? "저장 중..." : "기록 저장하기"}
       </button>
     </div>

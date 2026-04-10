@@ -16,7 +16,7 @@ export default function TeacherWrite({ students, addObservation }) {
     setSelected(selected.length === students.length ? [] : students.map((s) => s.id));
 
   const save = async () => {
-    if (!selected.length || !cat || !content.trim() || saving) return;
+    if (!selected.length || !content.trim() || saving) return;
     setSaving(true);
     let hasError = false;
     for (const sid of selected) {
@@ -24,7 +24,7 @@ export default function TeacherWrite({ students, addObservation }) {
       const { error } = await addObservation({
         targetId: sid,
         targetName: s?.name,
-        category: cat,
+        category: cat || null,
         content: content.trim(),
         date,
         authorType: "teacher",
@@ -41,7 +41,7 @@ export default function TeacherWrite({ students, addObservation }) {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const canSave = selected.length > 0 && cat && content.trim() && !saving;
+  const canSave = selected.length > 0 && content.trim() && !saving;
 
   return (
     <div style={{ paddingTop: 24 }}>
@@ -86,7 +86,7 @@ export default function TeacherWrite({ students, addObservation }) {
       </div>
 
       <button onClick={save} disabled={!canSave}
-        style={{ width: "100%", padding: 16, borderRadius: 14, border: "none", background: canSave ? "#1a1a2e" : "#ccc", color: canSave ? "#E8D5B7" : "#666", fontSize: 16, fontWeight: 700, cursor: "pointer", marginTop: 8, fontFamily: "inherit", transition: "all .2s" }}>
+        style={{ width: "100%", padding: 16, borderRadius: 14, border: "none", background: canSave ? "#1a1a2e" : "#ccc", color: "#E8D5B7", fontSize: 16, fontWeight: 700, cursor: "pointer", marginTop: 8, fontFamily: "inherit", transition: "all .2s" }}>
         {saved ? "✅ 저장되었습니다!" : saving ? "저장 중..." : `${selected.length}명 기록 저장`}
       </button>
     </div>
