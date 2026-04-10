@@ -8,6 +8,14 @@ export default function AIDraft({ students, observations, aiDrafts, saveDraft })
   const [draft, setDraft] = useState("");
   const [editDraft, setEditDraft] = useState("");
   const [copied, setCopied] = useState(false);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("nuga_api_key") || "");
+  const [showKey, setShowKey] = useState(false);
+
+  const saveApiKey = (key) => {
+    setApiKey(key);
+    if (key) localStorage.setItem("nuga_api_key", key);
+    else localStorage.removeItem("nuga_api_key");
+  };
 
   const generate = async () => {
     if (!selectedStudent) return;
@@ -45,9 +53,11 @@ ${obsText}
 위 기록을 바탕으로 행동특성 및 종합의견을 작성하세요. 영역별 분리 작성 후 통합하는 방식으로 진행하세요. 최종 결과만 출력하세요.`;
 
     try {
+      const headers = { "Content-Type": "application/json" };
+      if (apiKey) headers["x-api-key"] = apiKey;
       const response = await fetch("/api/generate", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1500,
@@ -61,7 +71,7 @@ ${obsText}
       setEditDraft(text);
       saveDraft(selectedStudent.id, text);
     } catch {
-      setDraft("AI 초안 생성에 실패했습니다. Vercel 배포 후 ANTHROPIC_API_KEY 환경변수를 확인해주세요.");
+      setDraft("AI 초안 생성에 실패했습니다. API 키를 확인해주세요.");
       setEditDraft("");
     }
     setLoading(false);
@@ -96,9 +106,37 @@ ${obsText}
   return (
     <div style={{ paddingTop: 24 }}>
       <h2 style={sectionTitle}>🤖 AI 종합의견 초안</h2>
-      <p style={{ fontSize: 13, color: "#666", marginBottom: 20 }}>
+      <p style={{ fontSize: 13, color: "#666", marginBottom: 16 }}>
         학생을 선택하면 누가기록을 바탕으로 행동특성 및 종합의견 초안을 생성합니다.
       </p>
+
+      <div style={{ background: "#fff", borderRadius: 12, padding: 16, marginBottom: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: apiKey ? 0 : 8 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#333" }}>🔑 API 키</span>
+          {apiKey ? (
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <span style={{ fontSize: 12, color: "#10B981" }}>설정됨</span>
+              <button onClick={() => setShowKey(!showKey)}
+                style={{ background: "none", border: "1px solid #ddd", borderRadius: 6, padding: "3px 10px", fontSize: 11, cursor: "pointer", fontFamily: "inherit", color: "#666" }}>
+                {showKey ? "숨기기" : "변경"}
+              </button>
+            </div>
+          ) : (
+            <span style={{ fontSize: 11, color: "#999" }}>console.anthropic.com에서 발급</span>
+          )}
+        </div>
+        {(!apiKey || showKey) && (
+          <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+            <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)}
+              placeholder="sk-ant-..."
+              style={{ ...inputStyle, flex: 1, marginTop: 0, fontSize: 13 }} />
+            <button onClick={() => { saveApiKey(apiKey); setShowKey(false); }}
+              style={{ padding: "8px 16px", borderRadius: 10, border: "none", background: "#1a1a2e", color: "#E8D5B7", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+              저장
+            </button>
+          </div>
+        )}
+      </div>
 
       {draftCount > 0 && (
         <button onClick={exportAllDrafts}

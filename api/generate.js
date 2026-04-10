@@ -1,13 +1,13 @@
 // Vercel Serverless Function — AI 종합의견 생성 프록시
-// ANTHROPIC_API_KEY를 Vercel 환경변수에 설정하세요.
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  // 클라이언트 헤더 → 환경변수 순으로 API 키 확인
+  const apiKey = req.headers["x-api-key"] || process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: "ANTHROPIC_API_KEY not configured" });
+    return res.status(400).json({ error: "API 키가 설정되지 않았습니다." });
   }
 
   try {
