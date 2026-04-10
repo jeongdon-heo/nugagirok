@@ -86,7 +86,7 @@ export default function TeacherWrite({ students, addObservation }) {
       </div>
 
       <button onClick={save} disabled={!canSave}
-        style={{ width: "100%", padding: 16, borderRadius: 14, border: "none", background: canSave ? "#1a1a2e" : "#ccc", color: "#E8D5B7", fontSize: 16, fontWeight: 700, cursor: "pointer", marginTop: 8, fontFamily: "inherit", transition: "all .2s" }}>
+        style={{ width: "100%", padding: 16, borderRadius: 14, border: "none", background: canSave ? "#1a1a2e" : "#ccc", color: canSave ? "#E8D5B7" : "#666", fontSize: 16, fontWeight: 700, cursor: "pointer", marginTop: 8, fontFamily: "inherit", transition: "all .2s" }}>
         {saved ? "✅ 저장되었습니다!" : saving ? "저장 중..." : `${selected.length}명 기록 저장`}
       </button>
     </div>
