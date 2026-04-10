@@ -50,6 +50,7 @@ export default function TeacherHome({ observations, currentClass, setPage }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         <ActionCard icon="✏️" label="기록하기" desc="학생 관찰 기록 입력" onClick={() => setPage("write")} bg="#EEF2FF" />
         <ActionCard icon="👥" label="학생관리" desc="학생별 기록 조회" onClick={() => setPage("students")} bg="#F0FDF4" />
+        <ActionCard icon="📜" label="전체기록" desc="모든 기록 타임라인" onClick={() => setPage("timeline")} bg="#F5F3FF" />
         <ActionCard icon="🎯" label="관찰미션" desc="주간 미션 관리" onClick={() => setPage("mission")} bg="#FFF7ED" />
         <ActionCard icon="🤖" label="AI 초안" desc="종합의견 생성" onClick={() => setPage("ai")} bg="#FDF2F8" />
       </div>

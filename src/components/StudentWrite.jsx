@@ -28,7 +28,7 @@ export default function StudentWrite({ students, currentStudent, addObservation,
     const { error } = await addObservation({
       targetId: target,
       targetName: s?.name,
-      category: cat || null,
+      category: cat || "general",
       content: content.trim(),
       date,
       authorType: "student",
