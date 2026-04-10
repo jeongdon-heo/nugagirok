@@ -142,6 +142,33 @@ export default function App() {
     }
   };
 
+  /* ─── 학생 관리 ─── */
+  const updateStudent = async (id, name, num) => {
+    const { error } = await supabase.from("students")
+      .update({ name, num }).eq("id", id);
+    if (error) { showToast("error", "학생 정보 수정에 실패했습니다."); return { error }; }
+    setStudents((prev) => prev.map((s) => s.id === id ? { ...s, name, num } : s));
+    showToast("success", "학생 정보가 수정되었습니다.");
+    return {};
+  };
+
+  const addStudent = async (name, num) => {
+    const { data, error } = await supabase.from("students").insert({
+      class_id: currentClass.id, name, num,
+    }).select();
+    if (error) { showToast("error", "학생 추가에 실패했습니다."); return { error }; }
+    setStudents((prev) => [...prev, data[0]].sort((a, b) => a.num - b.num));
+    showToast("success", `${name} 학생이 추가되었습니다.`);
+    return {};
+  };
+
+  const deleteStudent = async (id) => {
+    const { error } = await supabase.from("students").delete().eq("id", id);
+    if (error) { showToast("error", "학생 삭제에 실패했습니다."); return { error }; }
+    setStudents((prev) => prev.filter((s) => s.id !== id));
+    return {};
+  };
+
   /* ─── 관찰 기록 CRUD ─── */
   const addObservation = async (obs) => {
     const { data, error } = await supabase.from("observations").insert({
@@ -293,7 +320,7 @@ export default function App() {
           <TeacherWrite students={students} addObservation={addObservation} />
         )}
         {role === "teacher" && page === "students" && (
-          <StudentList students={students} observations={observations} updateObservation={updateObservation} />
+          <StudentList students={students} observations={observations} updateObservation={updateObservation} updateStudent={updateStudent} addStudent={addStudent} deleteStudent={deleteStudent} />
         )}
         {role === "teacher" && page === "timeline" && (
           <Timeline observations={observations} role={role} deleteObservation={deleteObservation} updateObservation={updateObservation} />
