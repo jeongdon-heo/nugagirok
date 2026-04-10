@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "./lib/supabase";
+import { supabase, isSupabaseConfigured } from "./lib/supabase";
 import LoginScreen from "./components/LoginScreen";
 import Header from "./components/Header";
 import BottomNav from "./components/BottomNav";
@@ -240,6 +240,28 @@ export default function App() {
   };
 
   /* ─── 렌더링 ─── */
+  if (!isSupabaseConfigured) {
+    return (
+      <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Pretendard Variable', 'Noto Sans KR', sans-serif" }}>
+        <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.min.css" rel="stylesheet" />
+        <div style={{ textAlign: "center", padding: 32, maxWidth: 480 }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>📋</div>
+          <h1 style={{ color: "#E8D5B7", fontSize: 24, fontWeight: 800, margin: "0 0 8px" }}>누가기록장</h1>
+          <p style={{ color: "#8899AA", fontSize: 14, margin: "0 0 24px" }}>학교생활 관찰 · 기록 · 종합의견</p>
+          <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: 24, textAlign: "left" }}>
+            <p style={{ color: "#F87171", fontSize: 14, fontWeight: 700, margin: "0 0 12px" }}>Supabase 설정이 필요합니다</p>
+            <p style={{ color: "#8899AA", fontSize: 13, lineHeight: 1.8, margin: 0 }}>
+              Vercel 대시보드에서 환경변수를 설정해주세요:<br /><br />
+              <code style={{ background: "#2a3a5e", padding: "2px 8px", borderRadius: 4, color: "#E8D5B7" }}>VITE_SUPABASE_URL</code><br />
+              <code style={{ background: "#2a3a5e", padding: "2px 8px", borderRadius: 4, color: "#E8D5B7" }}>VITE_SUPABASE_ANON_KEY</code><br /><br />
+              설정 후 Vercel에서 재배포(Redeploy)하세요.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div style={{ minHeight: "100vh", background: "#F8F6F1", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Pretendard Variable', 'Noto Sans KR', sans-serif" }}>
