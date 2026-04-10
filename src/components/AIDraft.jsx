@@ -8,13 +8,21 @@ export default function AIDraft({ students, observations, aiDrafts, saveDraft })
   const [draft, setDraft] = useState("");
   const [editDraft, setEditDraft] = useState("");
   const [copied, setCopied] = useState(false);
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem("nuga_api_key") || "");
+  const [provider, setProvider] = useState(() => localStorage.getItem("nuga_provider") || "claude");
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("nuga_api_key_" + (localStorage.getItem("nuga_provider") || "claude")) || "");
   const [showKey, setShowKey] = useState(false);
+
+  const switchProvider = (p) => {
+    setProvider(p);
+    localStorage.setItem("nuga_provider", p);
+    setApiKey(localStorage.getItem("nuga_api_key_" + p) || "");
+    setShowKey(false);
+  };
 
   const saveApiKey = (key) => {
     setApiKey(key);
-    if (key) localStorage.setItem("nuga_api_key", key);
-    else localStorage.removeItem("nuga_api_key");
+    if (key) localStorage.setItem("nuga_api_key_" + provider, key);
+    else localStorage.removeItem("nuga_api_key_" + provider);
   };
 
   const generate = async () => {
@@ -67,20 +75,17 @@ ${sObsText || "(기록 없음)"}
 위 기록을 바탕으로 행동특성 및 종합의견을 작성하세요. 최종 결과만 출력하세요.`;
 
     try {
-      const headers = { "Content-Type": "application/json" };
-      if (apiKey) headers["x-api-key"] = apiKey;
       const response = await fetch("/api/generate", {
         method: "POST",
-        headers,
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1500,
-          messages: [{ role: "user", content: prompt }],
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider, apiKey, prompt }),
       });
-      if (!response.ok) throw new Error("API 응답 오류");
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || "API 응답 오류");
+      }
       const data = await response.json();
-      const text = data.content?.map((c) => c.text || "").join("") || "생성에 실패했습니다.";
+      const text = data.text || "생성에 실패했습니다.";
       setDraft(text);
       setEditDraft(text);
       saveDraft(selectedStudent.id, text);
@@ -125,8 +130,16 @@ ${sObsText || "(기록 없음)"}
       </p>
 
       <div style={{ background: "#fff", borderRadius: 12, padding: 16, marginBottom: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+        <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+          {[{ id: "claude", label: "Claude", color: "#D97706" }, { id: "gemini", label: "Gemini", color: "#4285F4" }].map((p) => (
+            <button key={p.id} onClick={() => switchProvider(p.id)}
+              style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: provider === p.id ? `2px solid ${p.color}` : "2px solid #e5e7eb", background: provider === p.id ? p.color + "15" : "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", color: provider === p.id ? p.color : "#999" }}>
+              {p.label}
+            </button>
+          ))}
+        </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: apiKey ? 0 : 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "#333" }}>🔑 API 키</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#333" }}>🔑 {provider === "claude" ? "Claude" : "Gemini"} API 키</span>
           {apiKey ? (
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <span style={{ fontSize: 12, color: "#10B981" }}>설정됨</span>
@@ -136,13 +149,15 @@ ${sObsText || "(기록 없음)"}
               </button>
             </div>
           ) : (
-            <span style={{ fontSize: 11, color: "#999" }}>console.anthropic.com에서 발급</span>
+            <span style={{ fontSize: 11, color: "#999" }}>
+              {provider === "claude" ? "console.anthropic.com" : "aistudio.google.com"}에서 발급
+            </span>
           )}
         </div>
         {(!apiKey || showKey) && (
           <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
             <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)}
-              placeholder="sk-ant-..."
+              placeholder={provider === "claude" ? "sk-ant-..." : "AIza..."}
               style={{ ...inputStyle, flex: 1, marginTop: 0, fontSize: 13 }} />
             <button onClick={() => { saveApiKey(apiKey); setShowKey(false); }}
               style={{ padding: "8px 16px", borderRadius: 10, border: "none", background: "#1a1a2e", color: "#E8D5B7", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
