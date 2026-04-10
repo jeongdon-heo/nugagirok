@@ -323,7 +323,7 @@ export default function App() {
           <StudentList students={students} observations={observations} updateObservation={updateObservation} updateStudent={updateStudent} addStudent={addStudent} deleteStudent={deleteStudent} />
         )}
         {role === "teacher" && page === "timeline" && (
-          <Timeline observations={observations} role={role} deleteObservation={deleteObservation} updateObservation={updateObservation} />
+          <Timeline students={students} observations={observations} role={role} deleteObservation={deleteObservation} updateObservation={updateObservation} />
         )}
         {role === "teacher" && page === "stats" && (
           <Stats students={students} observations={observations} />
