@@ -114,7 +114,7 @@ export default function StudentWrite({ students, currentStudent, addObservation,
       </label>
       <textarea value={content}
         onChange={(e) => { setContent(e.target.value); checkNegative(e.target.value); }}
-        placeholder="나 또는 친구의 좋은 모습을 구체적으로 적어보세요..."
+        placeholder="친구의 좋은 모습을 구체적으로 적어보세요..."
         style={{ ...inputStyle, height: 100, resize: "vertical" }}
         maxLength={500} />
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
