@@ -11,18 +11,26 @@ export default function AIDraft({ students, observations, aiDrafts, saveDraft })
   const [provider, setProvider] = useState(() => localStorage.getItem("nuga_provider") || "claude");
   const [apiKey, setApiKey] = useState(() => localStorage.getItem("nuga_api_key_" + (localStorage.getItem("nuga_provider") || "claude")) || "");
   const [showKey, setShowKey] = useState(false);
+  const [keySaved, setKeySaved] = useState(() => !!localStorage.getItem("nuga_api_key_" + (localStorage.getItem("nuga_provider") || "claude")));
 
   const switchProvider = (p) => {
     setProvider(p);
     localStorage.setItem("nuga_provider", p);
-    setApiKey(localStorage.getItem("nuga_api_key_" + p) || "");
+    const saved = localStorage.getItem("nuga_api_key_" + p) || "";
+    setApiKey(saved);
+    setKeySaved(!!saved);
     setShowKey(false);
   };
 
   const saveApiKey = (key) => {
     setApiKey(key);
-    if (key) localStorage.setItem("nuga_api_key_" + provider, key);
-    else localStorage.removeItem("nuga_api_key_" + provider);
+    if (key) {
+      localStorage.setItem("nuga_api_key_" + provider, key);
+      setKeySaved(true);
+    } else {
+      localStorage.removeItem("nuga_api_key_" + provider);
+      setKeySaved(false);
+    }
   };
 
   const generate = async () => {
@@ -145,7 +153,7 @@ ${sObsText || "(기록 없음)"}
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: apiKey ? 0 : 8 }}>
           <span style={{ fontSize: 13, fontWeight: 700, color: "#333" }}>🔑 {provider === "claude" ? "Claude" : "Gemini"} API 키</span>
-          {apiKey ? (
+          {keySaved ? (
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <span style={{ fontSize: 12, color: "#10B981" }}>설정됨</span>
               <button onClick={() => setShowKey(!showKey)}
@@ -159,7 +167,7 @@ ${sObsText || "(기록 없음)"}
             </span>
           )}
         </div>
-        {(!apiKey || showKey) && (
+        {(!keySaved || showKey) && (
           <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
             <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)}
               placeholder={provider === "claude" ? "sk-ant-..." : "AIza..."}
