@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="36" fill="#1a1a2e"/>
+  <g transform="translate(96,96)">
+    <path d="M-45,-30 L-45,38 Q-45,45 -38,45 L38,45 Q45,45 45,38 L45,-30 Q45,-38 38,-38 L-38,-38 Q-45,-38 -45,-30 Z" fill="#E8D5B7" opacity="0.95"/>
+    <line x1="0" y1="-38" x2="0" y2="45" stroke="#1a1a2e" stroke-width="1.5" opacity="0.2"/>
+    <line x1="-30" y1="-18" x2="-6" y2="-18" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
+    <line x1="-30" y1="-7" x2="-6" y2="-7" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
+    <line x1="-30" y1="4" x2="-6" y2="4" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
+    <line x1="6" y1="-18" x2="30" y2="-18" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
+    <line x1="6" y1="-7" x2="30" y2="-7" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
+    <line x1="6" y1="4" x2="30" y2="4" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
+    <g transform="translate(19,11) rotate(30)">
+      <rect x="-2.5" y="-23" width="5" height="30" rx="1" fill="#0f3460"/>
+      <polygon points="-2.5,7 2.5,7 0,13" fill="#0f3460"/>
+    </g>
+  </g>
+</svg>
