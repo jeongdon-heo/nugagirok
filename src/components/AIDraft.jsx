@@ -27,6 +27,11 @@ export default function AIDraft({ students, observations, aiDrafts, saveDraft })
 
   const generate = async () => {
     if (!selectedStudent) return;
+    if (!apiKey) {
+      setDraft("API 키를 먼저 입력해주세요. 위에서 API 키를 입력하고 저장 버튼을 눌러주세요.");
+      setEditDraft("");
+      return;
+    }
     setLoading(true);
     const sObs = observations.filter((o) => o.targetId === selectedStudent.id);
     const teacherObs = sObs.filter((o) => o.authorType === "teacher");
