@@ -89,8 +89,8 @@ ${sObsText || "(기록 없음)"}
       setDraft(text);
       setEditDraft(text);
       saveDraft(selectedStudent.id, text);
-    } catch {
-      setDraft("AI 초안 생성에 실패했습니다. API 키를 확인해주세요.");
+    } catch (e) {
+      setDraft(e.message || "AI 초안 생성에 실패했습니다. API 키를 확인해주세요.");
       setEditDraft("");
     }
     setLoading(false);
